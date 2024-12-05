@@ -6,9 +6,7 @@ use App\Models\Photos; // For accessing the Photos model
 use Illuminate\Http\Request; // For handling HTTP requests
 use Illuminate\Support\Facades\Http; // For making API requests
 use Illuminate\Support\Facades\Auth; // For user authentication
-use Illuminate\Support\Facades\DB; // For direct database queries
-use Illuminate\Support\Facades\Log; // For logging errors (if needed)
-
+use Illuminate\Support\Facades\DB; // For user authentication
 
 class PhotosController extends Controller
 {
@@ -23,9 +21,21 @@ class PhotosController extends Controller
             $this->fetchAndSavePictures($this->maxPictures - $currentCount);
         }
 
-        $pictures = Photos::all();
+        $pictures = Photos::all()->map(function ($photo) {
+            return [
+                'idPhoto' => $photo->idPhoto,
+                'title' => $photo->title,
+                'explanation' => $photo->description,
+                'url' => $photo->urlPhoto,
+                'date' => $photo->date,
+                'heart' => 0,
+                // Add other fields if necessary
+            ];
+        });
 
-        return view('gallery.gallery', compact('pictures'));
+        //dd($pictures);
+
+        return view('gallery.gallery', ['pictures' => $pictures]);
     }
 
     public function delete($id)
@@ -60,35 +70,38 @@ class PhotosController extends Controller
         }
 
         $pictures = $response->object();
+        
 
         foreach ($pictures as $picture) {
+            //dd($picture);
             if (property_exists($picture, 'url') && property_exists($picture, 'title') && property_exists($picture, 'explanation')) {
                 Photos::create([
                     'title' => $picture->title,
                     'date' => $picture->date,
-                    'explanation' => $picture->explanation,
-                    'url' => $picture->url,
+                    'numLikes' => 0,
+                    'description' => $picture->explanation,
+                    'urlPhoto' => $picture->url,
                 ]);
             }
         }
     }
-/*
+
     public function associateUser($idUser, $picture)
     {
 
-        $photo = DB::table('userpicture')->where('idUser', $idUser)->where('idPicture', $picture->idPicture)->first();
+        $photo = DB::table('user_photos')->where('idUser', $idUser)->where('idPhoto', $picture->idPicture)->first();
         if (is_null($photo)) {
             $picture->userSaved()->attach($idUser);
         }
     }
-*/
-/*
+
+
     public function disassociateUser($idUser, $picture)
     {
 
         $picture->userSaved()->detach($idUser);
     }
-*/
+
     public function like(Request $req)
     {
         $photo = Photos::firstOrCreate(
@@ -105,13 +118,12 @@ class PhotosController extends Controller
 
         $user = Auth::user();
     
-        // Manage the like/unlike action
-        if ($req->heart === "true") {
-            // Associate the picture with the user if liked
-            $user->savedPictures()->syncWithoutDetaching([$photo->id]);
-        } elseif ($req->heart === "false") {
-            // Disassociate the picture from the user if unliked
-            $user->savedPictures()->detach($photo->id);
+        $unFavPicture = Photos::find($photo->idPicture);
+        if ($req->heart == "true") {
+            $this->associateUser($req->userId, $unFavPicture);
+        } elseif ($req->heart == "false") {
+
+            $this->disassociateUser($req->userId, $unFavPicture);
         }
     
         return response()->json();

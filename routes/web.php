@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -36,12 +38,39 @@ Route::get('/login', function () {
     }
 });
 
+
+Route::get('/outerSpace', function () {
+    return view('outerSpace.outerSpace');
+})->name('outerspace');
+
 Route::get('/register', function () {
     if (Auth::check()) {
         return redirect('/outerSpace');
     } else {
         return view('auth.register');
     }
+});
+
+Route::group(['prefix' => 'gallery', 'as' => 'gallery.'], function () {
+
+    Route::get('/', [PhotosController::class, 'show']);
+
+    Route::get('watch/{date}', [PhotosController::class, 'watch'])->name('watch');
+
+    Route::get('showSavedPictures', [PhotosController::class, 'showSavedPictures'])->name('showSavedPictures')->middleware(['auth']);
+
+    Route::get('like', [PhotosController::class, 'like'])->name('like')->middleware(['auth']);
+});
+
+Route::group(['prefix' => 'news', 'as' => 'news.'], function () {
+
+    Route::get('/', [NewsController::class, 'show']);
+
+    Route::get('like', [NewsController::class, 'like'])->name('like')->middleware(['auth']);
+
+
+    Route::get('showSavedNews', [NewsController::class, 'showSavedNews'])->name('showSavedNews')->middleware(['auth']);
+
 });
 
 Route::get('/dashboard', function () {

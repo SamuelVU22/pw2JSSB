@@ -45,6 +45,18 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+    public function savedPictures()
+    {
+
+        return $this->belongsToMany('App\Models\Photos', 'user_photos', 'idUser', 'idPhoto');
+    }
+
+    public function savedNews()
+    {
+
+        return $this->belongsToMany('App\Models\News', 'user_news', 'idUser', 'idNews');
+    }
+
     /**
      * The accessors to append to the model's array form.
      *

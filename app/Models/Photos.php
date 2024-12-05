@@ -18,14 +18,14 @@ class Photos extends Model
         
     ];
 
-    protected $table = 'picture';
+    protected $table = 'photos';
     protected $primaryKey = 'idPhoto';
 
    
 
     public function userSaved() {
 
-        return $this->belongsToMany('App\Models\Picture','userpicture','idPicture', 'idUser');
+        return $this->belongsToMany('App\Models\Photos','user_photos','idPhoto', 'idUser');
     }
 }
 
