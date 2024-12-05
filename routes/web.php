@@ -4,11 +4,43 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+
+//dd();
+//dd(request()->path());
+
+
+
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect('/outerSpace');
     } else {
         return view('landingPage.landingPage');
+    }
+});
+
+
+
+Route::get('login', function () {
+    if (Auth::check()) {
+        return redirect('/outerSpace');
+    } else {
+        return view('auth.login');
+    }
+});
+
+Route::get('/login', function () {
+    if (Auth::check()) {
+        return redirect('/outerSpace');
+    } else {
+        return view('auth.login');
+    }
+});
+
+Route::get('/register', function () {
+    if (Auth::check()) {
+        return redirect('/outerSpace');
+    } else {
+        return view('auth.register');
     }
 });
 
