@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->integer('numLikes');
+            $table->boolean('isLike')->default(false);
             $table->date('date');
             $table->text('urlPhoto');
             $table->timestamps();

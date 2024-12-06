@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB; // For user authentication
 class PhotosController extends Controller
 {
 
-    protected $maxPictures = 10;
+    protected $maxPictures = 20;
 
     public function show()
     {
@@ -28,7 +28,7 @@ class PhotosController extends Controller
                 'explanation' => $photo->description,
                 'url' => $photo->urlPhoto,
                 'date' => $photo->date,
-                'heart' => 0,
+                'isLike' => $photo->isLike,
                 // Add other fields if necessary
             ];
         });
@@ -70,7 +70,7 @@ class PhotosController extends Controller
         }
 
         $pictures = $response->object();
-        
+
 
         foreach ($pictures as $picture) {
             //dd($picture);
@@ -78,7 +78,7 @@ class PhotosController extends Controller
                 Photos::create([
                     'title' => $picture->title,
                     'date' => $picture->date,
-                    'numLikes' => 0,
+                    'numLikes' => $picture->numLikes,
                     'description' => $picture->explanation,
                     'urlPhoto' => $picture->url,
                 ]);
@@ -104,32 +104,36 @@ class PhotosController extends Controller
 
     public function like(Request $req)
     {
-        $photo = Photos::firstOrCreate(
-            ['date' => $req->date],
-            [
-                'title' => $req->title,
-                'explanation' => $req->explanation,
-                'url' => $req->picture,
-                'heart' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
+        // Find the photo by date
+        $photo = Photos::where('date', $req->date)->firstOrFail(); // Throws 404 if not found
 
-        $user = Auth::user();
+        //dd($req->input('heart'));
+        //dd($photo->title);
     
-        $unFavPicture = Photos::find($photo->idPicture);
-        if ($req->heart == "true") {
-            $this->associateUser($req->userId, $unFavPicture);
-        } elseif ($req->heart == "false") {
-
-            $this->disassociateUser($req->userId, $unFavPicture);
+        // Update the isLike attribute to 1 if liked, or reset it to 0 if unliked
+        if ($req->input('heart') === "true") {
+            $photo->isLike = 1;
+            $photo->numLikes++;
+            $photo->save(); // Persist the change in the database
+    
+            //dd("true");
+            // Associate the photo with the user (like it)
+            $this->associateUser($req->userId, $photo);
+        } elseif ($req->input('heart')  === "false") {
+            $photo->isLike = 0;
+            $photo->numLikes--;
+            $photo->save(); // Persist the change in the database
+    
+            //dd("false");
+            // Disassociate the photo from the user (unlike it)
+            $this->disassociateUser($req->userId, $photo);
         }
+        //dd($photo);
     
-        return response()->json();
-
-
+        // Return a success response
+        return response()->json(['success' => true, 'message' => 'Like status updated']);
     }
+    
 
 
     public function watch(Request $req, $date)

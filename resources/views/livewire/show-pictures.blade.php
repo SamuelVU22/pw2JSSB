@@ -4,6 +4,7 @@
 
     @foreach ($pictures as $report)
     
+    {{--dd($report)--}}
         <article class="card">
             @if (isset($report->url))
                 <img src="{{ $report->url }}" alt="{{ $report->title }}">
@@ -35,7 +36,7 @@
                         <div class="like">
                             <input type="checkbox" class="cora" name="like" id="cora{{ ++$cont }}"
                                 data-date="{{ $report['date'] }}" data-title="{{ $report['title'] }}"
-                                data-explanation="{{ $report['explanation'] }}" data-picture="{{ $report['url'] }}" @if ($report['heart'] == 1) checked @endif/>
+                                data-explanation="{{ $report['explanation'] }}" data-picture="{{ $report['url'] }}" @if ($report['isLike'] == 1) checked @endif/>
                             <label for="cora{{ $cont }}">
                                 <x-heart-s-v-g />
                             </label>
@@ -60,20 +61,18 @@
         </div>
     @endif
     <script>
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
         $(".cora").click(function() {
-
-
-
-
+            
             $.ajax({
-                url: "{{ route('gallery.like', app()->getLocale()) }}",
+                url: "{{ route('gallery.like');}}",
                 method: 'GET',
-
                 data: {
                     id: $(this).attr('id'),
                     _token: $('input[name="_token"]').val(),

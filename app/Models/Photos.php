@@ -15,7 +15,7 @@ class Photos extends Model
         'numLikes',
         'date',
         'urlPhoto',
-        
+        'isLike',
     ];
 
     protected $table = 'photos';

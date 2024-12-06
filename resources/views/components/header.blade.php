@@ -23,11 +23,7 @@
 
                     <div class="dropdown-content">
 
-                        @if (Auth::user()->idRole == 1 || Auth::user()->idRole == 2)
-                            <a class="dropdown-item-0" href="{{ route('user.show') }}">
-                                {{ __('Manage users') }}
-                            </a>
-                        @endif
+                        
                         <a class="dropdown-item-1" href="{{ route('profile.show')}}">
                             {{ __('Profile') }}
                         </a>
