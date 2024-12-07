@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('idPhoto');
             $table->string('title');
             $table->text('description');
-            $table->integer('numLikes');
+            $table->integer('numLikes')->default(0);
             $table->boolean('isLike')->default(false);
             $table->date('date');
             $table->text('urlPhoto');

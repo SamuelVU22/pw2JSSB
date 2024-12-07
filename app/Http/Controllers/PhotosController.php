@@ -28,8 +28,8 @@ class PhotosController extends Controller
                 'explanation' => $photo->description,
                 'url' => $photo->urlPhoto,
                 'date' => $photo->date,
+                'numLikes' => $photo->numLikes,
                 'isLike' => $photo->isLike,
-                // Add other fields if necessary
             ];
         });
 
@@ -38,6 +38,8 @@ class PhotosController extends Controller
         return view('gallery.gallery', ['pictures' => $pictures]);
     }
 
+
+    
     public function delete($id)
     {
         // Delete the specified picture
@@ -75,10 +77,12 @@ class PhotosController extends Controller
         foreach ($pictures as $picture) {
             //dd($picture);
             if (property_exists($picture, 'url') && property_exists($picture, 'title') && property_exists($picture, 'explanation')) {
+                //dd($picture->date);
                 Photos::create([
                     'title' => $picture->title,
                     'date' => $picture->date,
-                    'numLikes' => $picture->numLikes,
+                    'numLikes' => 0,
+                    'isLike' => 0,
                     'description' => $picture->explanation,
                     'urlPhoto' => $picture->url,
                 ]);

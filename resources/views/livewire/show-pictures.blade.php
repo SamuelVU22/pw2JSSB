@@ -4,7 +4,7 @@
 
     @foreach ($pictures as $report)
     
-    {{--dd($report)--}}
+    {{--dd($report['numLikes'])--}}
         <article class="card">
             @if (isset($report->url))
                 <img src="{{ $report->url }}" alt="{{ $report->title }}">
@@ -13,11 +13,10 @@
             @endif
 
             <div class="info">
-               
-
-
+            
                 @if (isset($report->url))
                     @auth
+                    <span class="like-count">{{ $report->numLikes }} likes</span>
                         <div class="like">
                             <input type="checkbox" class="cora" name="like" id="cora{{ ++$cont }}"
                                 data-date="{{ $report->date }}" data-title="{{ $report->title }}"
@@ -25,6 +24,8 @@
                             <label for="cora{{ $cont }}">
                                 <x-heart-s-v-g />
                             </label>
+                            
+                            
                         </div>
                     @endauth
                     <a id="info-title"
@@ -33,17 +34,20 @@
                     <p id="info-date">{{ $report->date }}</p>
                 @else
                     @auth
+                    
                         <div class="like">
+                            <span class="like-count">{{ $report['numLikes'] }} likes</span>
                             <input type="checkbox" class="cora" name="like" id="cora{{ ++$cont }}"
                                 data-date="{{ $report['date'] }}" data-title="{{ $report['title'] }}"
                                 data-explanation="{{ $report['explanation'] }}" data-picture="{{ $report['url'] }}" @if ($report['isLike'] == 1) checked @endif/>
                             <label for="cora{{ $cont }}">
                                 <x-heart-s-v-g />
                             </label>
+
                         </div>
                     @endauth
                     <a id="info-title"
-                        href="{{ route('gallery.watch', ['locale' => app()->getLocale(), 'date' => $report['date']]) }}">{{ $report['title'] }}</a>
+                        href="{{ route('gallery.watch', ['date' => $report['date']]) }}">{{ $report['title'] }}</a>
                     <p id="info-expl">{{ $report['explanation'] }}</p>
                     <p id="info-date">{{ $report['date'] }}</p>
                 @endif

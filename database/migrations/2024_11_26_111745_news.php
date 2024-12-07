@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('idNews');
             $table->string('title');
-            $table->text('content');
-            $table->integer('numLikes');
-            $table->text('imageUrl');
+            $table->text('description');
+            $table->integer('numLikes')->default(0);
+            $table->boolean('isLike')->default(false);
+            $table->date('date');
+            $table->text('urlPhoto');
+            $table->text('urlNews');
             $table->timestamps();
         });
     }

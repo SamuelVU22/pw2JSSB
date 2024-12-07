@@ -10,13 +10,14 @@ class News extends Model
     use HasFactory;
 
     protected $fillable = [
-        'idNews',
         'title',
-        'content',
+        'description',
         'numLikes',
-        'imageUrl',
+        'date',
+        'urlPhoto',
         'created_at',
         'updated_at',
+        'urlNews',
     ];
 
     protected $table = 'news';
@@ -26,6 +27,6 @@ class News extends Model
 
     public function userSaved() {
 
-        return $this->belongsToMany('App\Models\News','usernews','idNews', 'idUser');
+        return $this->belongsToMany('App\Models\News','user_news','idNews', 'idUser');
     }
 }
