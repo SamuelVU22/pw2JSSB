@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="welcome">
-        <h1 id="wel-title">{{ __('Welcome to SPACEBP!') }}</h1>
+        <h1 id="wel-title">{{ __('Welcome to SPACEBJ!') }}</h1>
         <article id="wel-gallery">
             <h2>{{ __('Gallery') }}</h2>
             <x-gallery-s-v-g />

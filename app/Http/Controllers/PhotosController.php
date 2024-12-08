@@ -16,12 +16,23 @@ class PhotosController extends Controller
     public function show()
     {
 
+        $currentUserId = Auth::id(); // Get the current user's ID
+
+
+
         $currentCount = Photos::count();
         if ($currentCount < $this->maxPictures) {
             $this->fetchAndSavePictures($this->maxPictures - $currentCount);
         }
 
-        $pictures = Photos::all()->map(function ($photo) {
+
+
+        $pictures = Photos::all()->map(function ($photo) use ($currentUserId) {
+            // Check if the current user has liked this photo
+            $isLikedByUser = DB::table('user_photos')
+                ->where('idUser', $currentUserId)
+                ->where('idPhoto', $photo->idPhoto)
+                ->exists();
             return [
                 'idPhoto' => $photo->idPhoto,
                 'title' => $photo->title,
@@ -29,7 +40,7 @@ class PhotosController extends Controller
                 'url' => $photo->urlPhoto,
                 'date' => $photo->date,
                 'numLikes' => $photo->numLikes,
-                'isLike' => $photo->isLike,
+                'isLike' => $isLikedByUser,
             ];
         });
 
@@ -39,7 +50,7 @@ class PhotosController extends Controller
     }
 
 
-    
+
     public function delete($id)
     {
         // Delete the specified picture
@@ -111,33 +122,31 @@ class PhotosController extends Controller
         // Find the photo by date
         $photo = Photos::where('date', $req->date)->firstOrFail(); // Throws 404 if not found
 
-        //dd($req->input('heart'));
+
         //dd($photo->title);
-    
+
         // Update the isLike attribute to 1 if liked, or reset it to 0 if unliked
         if ($req->input('heart') === "true") {
             $photo->isLike = 1;
             $photo->numLikes++;
             $photo->save(); // Persist the change in the database
-    
-            //dd("true");
             // Associate the photo with the user (like it)
             $this->associateUser($req->userId, $photo);
         } elseif ($req->input('heart')  === "false") {
             $photo->isLike = 0;
             $photo->numLikes--;
             $photo->save(); // Persist the change in the database
-    
+
             //dd("false");
             // Disassociate the photo from the user (unlike it)
             $this->disassociateUser($req->userId, $photo);
         }
         //dd($photo);
-    
+
         // Return a success response
         return response()->json(['success' => true, 'message' => 'Like status updated']);
     }
-    
+
 
 
     public function watch(Request $req, $date)

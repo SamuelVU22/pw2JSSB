@@ -18,6 +18,7 @@ class NewsController extends Controller
 
     public function show()
     {
+        $currentUserId = Auth::id(); // Get the current user's ID
         // Ensure the database has at least $maxNews articles
         $currentCount = News::count();
         if ($currentCount < $this->maxNews) {
@@ -25,8 +26,13 @@ class NewsController extends Controller
         }
 
         // Fetch news articles and format them for display
-        $news = News::all()->map(function ($article) {
+        $news = News::all()->map(function ($article) use ($currentUserId) {
             //dd($article);
+            // Check if the current user has liked this photo
+            $isLikedByUser = DB::table('user_news')
+                ->where('idUser', $currentUserId)
+                ->where('idNews', $article->idNews)
+                ->exists();
             return [
                 'idNews' => $article->idNews,
                 'title' => $article->title,
@@ -116,10 +122,8 @@ class NewsController extends Controller
     public function like(Request $req)
     {
         // Find the photo by date
-        $news = News::where('date', $req->date)->firstOrFail(); // Throws 404 if not found
+        $news = News::where('idNews', $req->idNews)->firstOrFail(); // Throws 404 if not found
 
-        //dd($req->input('heart'));
-        //dd($photo->title);
         // Update the isLike attribute to 1 if liked, or reset it to 0 if unliked
         if ($req->input('heart') === "true") {
             $news->isLike = 1;

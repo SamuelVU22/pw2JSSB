@@ -57,7 +57,7 @@ Route::group(['prefix' => 'gallery', 'as' => 'gallery.'], function () {
 
     Route::get('watch/{date}', [PhotosController::class, 'watch'])->name('watch');
 
-    Route::get('showSavedPictures', [PhotosController::class, 'showSavedPictures'])->name('showSavedPictures')->middleware(['auth']);
+   // Route::get('showSavedPictures', [PhotosController::class, 'showSavedPictures'])->name('showSavedPictures')->middleware(['auth']);
 
     Route::get('like', [PhotosController::class, 'like'])->name('like')->middleware(['auth']);
 });
@@ -68,13 +68,12 @@ Route::group(['prefix' => 'news', 'as' => 'news.'], function () {
 
     Route::get('like', [NewsController::class, 'like'])->name('like')->middleware(['auth']);
 
-
-    Route::get('showSavedNews', [NewsController::class, 'showSavedNews'])->name('showSavedNews')->middleware(['auth']);
+    //Route::get('showSavedNews', [NewsController::class, 'showSavedNews'])->name('showSavedNews')->middleware(['auth']);
 
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/outerSpace');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

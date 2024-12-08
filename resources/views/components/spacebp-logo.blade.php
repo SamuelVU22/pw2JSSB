@@ -58,7 +58,7 @@
                     <g id="g876" />
                 </g>
                 <text xml:space="preserve" transform="matrix(0.30225277,0,0,0.43178952,-5.0329274,-134.22934)">
-                    <tspan id="logoText" x="150.68359" y="800.58984">SPACEBP</tspan>
+                    <tspan id="logoText" x="150.68359" y="800.58984">SPACEBJ</tspan>
                 </text>
             </g>
         </a>
