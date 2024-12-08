@@ -23,7 +23,6 @@ News API Documentation: https://api.spaceflightnewsapi.net/v3/documentation
 
 Solar system used: https://paulohscwb.github.io/solar-system/vr/solar.html
 
-For using Ajax, I used the notes from Mayorga.
 
 Sass Documentation: https://sass-lang.com/documentation/
 
