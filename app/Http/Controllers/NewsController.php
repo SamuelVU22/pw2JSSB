@@ -92,16 +92,6 @@ class NewsController extends Controller
     }
 
 
-    /*
-    public function showSavedNews()
-    {
-
-        $news = Auth::user()->savedNews()->get()->toArray();
-
-
-        return view('news.news', ['news' => $news]);
-    }
-*/
     public function associateUser($idUser, $news)
     {
 
